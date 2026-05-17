@@ -1,11 +1,10 @@
 require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
 const { Pool } = require('pg');
 
+const isRailwayInternal = process.env.DATABASE_URL?.includes('railway.internal');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes('railway') || process.env.NODE_ENV === 'production'
-    ? { rejectUnauthorized: false }
-    : false
+  ssl: isRailwayInternal ? false : (process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false)
 });
 
 pool.on('error', (err) => {
