@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyAI</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__logo">Study<span>AI</span></div>
+    <h2 data-i18n="login.title">Bem-vindo de volta!</h2>
+    <div id="error-msg" class="form-error" style="display:none"></div>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label data-i18n="login.email">E-mail</label>
+        <input type="email" id="email" data-i18n="login.email" placeholder="seu@email.com" required>
+      </div>
+      <div class="form-group">
+        <label data-i18n="login.password">Senha</label>
+        <input type="password" id="senha" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="login-btn" data-i18n="login.btn">Entrar</button>
+    </form>
+    <div class="auth-link">
+      <span data-i18n="login.no_account">Não tem conta?</span> <a href="/cadastro.html" data-i18n="login.signup_link">Cadastre-se grátis</a>
+    </div>
+    <div class="auth-link" style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+      <a href="/index.html" data-i18n="login.back">← Voltar para o início</a>
+      <div id="lang-selector-wrap"></div>
+    </div>
+  </div>
+</div>
+<script src="/js/auth.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/geo.js"></script>
+<script>
+  redirectIfAuth();
+  renderLangSelector('lang-selector-wrap');
+  applyTranslations();
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const btn = document.getElementById('login-btn');
+    const errEl = document.getElementById('error-msg');
+    btn.textContent = t('login.loading');
+    btn.disabled = true;
+    errEl.style.display = 'none';
+
+    const { ok, data } = await apiFetch('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email: document.getElementById('email').value, senha: document.getElementById('senha').value })
+    });
+
+    if (ok) {
+      setAuth(data.token, data.user);
+      window.location.href = '/dashboard.html';
+    } else {
+      errEl.textContent = data.error || 'Erro ao entrar.';
+      errEl.style.display = 'block';
+      btn.textContent = t('login.btn');
+      btn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>

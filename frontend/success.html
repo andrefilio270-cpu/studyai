@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagamento confirmado — StudyAI</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .success-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--dark-blue), #2A3E7A); padding: 16px; }
+    .success-card { background: white; border-radius: 24px; padding: 48px 40px; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 16px 48px rgba(0,0,0,.2); }
+    .success-icon { font-size: 4rem; margin-bottom: 16px; }
+    .success-card h1 { font-family: 'Poppins', sans-serif; color: var(--dark-blue); font-size: 1.6rem; margin-bottom: 8px; }
+    .success-card p { color: var(--gray-text); line-height: 1.6; margin-bottom: 24px; }
+    .plan-badge { display: inline-block; background: #D1FAE5; color: #065F46; padding: 6px 20px; border-radius: 20px; font-weight: 700; font-size: .9rem; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+<div class="success-page">
+  <div class="success-card">
+    <div class="success-icon">🎉</div>
+    <h1 id="title">Pagamento confirmado!</h1>
+    <div class="plan-badge" id="plan-label">Carregando...</div>
+    <p id="desc">Seu plano foi ativado com sucesso. Bons estudos!</p>
+    <a href="/dashboard.html" class="btn btn-primary" style="width:100%;padding:14px">Começar a estudar →</a>
+    <div style="margin-top:16px">
+      <a href="/perfil.html" style="font-size:.85rem;color:var(--gray-text)">Ver meu perfil</a>
+    </div>
+  </div>
+</div>
+<script src="/js/auth.js"></script>
+<script src="/js/i18n.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const sessionId = params.get('session_id');
+
+  const PLAN_LABELS = {
+    semanal: { pt: 'Plano Semanal ativado ✓', en: 'Weekly Plan activated ✓', es: 'Plan Semanal activado ✓' },
+    mensal:  { pt: 'Plano Mensal ativado ✓',  en: 'Monthly Plan activated ✓', es: 'Plan Mensual activado ✓' },
+    anual:   { pt: 'Plano Anual ativado ✓',   en: 'Yearly Plan activated ✓',  es: 'Plan Anual activado ✓' },
+  };
+
+  async function verifyPayment() {
+    if (!sessionId || !getToken()) {
+      window.location.href = '/dashboard.html';
+      return;
+    }
+
+    const { ok, data } = await apiFetch('/payments/verify?session_id=' + sessionId);
+    const lang = localStorage.getItem('sa_lang') || 'pt';
+
+    if (ok && data.ok) {
+      const plano = data.plano;
+      const label = PLAN_LABELS[plano]?.[lang] || `Plano ${plano} ativado ✓`;
+      document.getElementById('plan-label').textContent = label;
+
+      const user = getUser();
+      if (user) {
+        user.plano = plano;
+        user.perguntas_usadas = 0;
+        localStorage.setItem('sa_user', JSON.stringify(user));
+      }
+
+      if (lang === 'en') {
+        document.getElementById('title').textContent = 'Payment confirmed!';
+        document.getElementById('desc').textContent = 'Your plan has been activated. Happy studying!';
+        document.querySelector('a[href="/dashboard.html"]').textContent = 'Start studying →';
+      } else if (lang === 'es') {
+        document.getElementById('title').textContent = '¡Pago confirmado!';
+        document.getElementById('desc').textContent = 'Tu plan ha sido activado. ¡Buena suerte con tus estudios!';
+        document.querySelector('a[href="/dashboard.html"]').textContent = 'Empezar a estudiar →';
+      }
+    } else {
+      document.getElementById('plan-label').textContent = 'Verificando...';
+      document.getElementById('plan-label').style.background = '#FEF3C7';
+      document.getElementById('plan-label').style.color = '#92400E';
+    }
+  }
+
+  verifyPayment();
+</script>
+</body>
+</html>

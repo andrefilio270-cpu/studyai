@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minhas Conversas — StudyAI</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="header" id="header"></header>
+
+<div class="conversations-page">
+  <h1 style="font-family:'Poppins',sans-serif;color:var(--dark-blue);margin-bottom:8px">📁 Minhas Conversas</h1>
+  <p style="color:var(--gray-text);margin-bottom:24px">Suas conversas salvas com os professores.</p>
+
+  <div class="conversations-filters">
+    <input type="text" id="busca-input" placeholder="Buscar por título..." oninput="loadConversations()">
+    <select id="prof-filter" onchange="loadConversations()">
+      <option value="">Todos os professores</option>
+      <option value="carlos">📐 Prof. Carlos — Matemática</option>
+      <option value="ana">✍️ Profa. Ana — Português</option>
+      <option value="ricardo">⚡ Prof. Ricardo — Física</option>
+      <option value="beatriz">🧪 Profa. Beatriz — Química</option>
+      <option value="joao">🏛️ Prof. João — História</option>
+      <option value="marina">🌿 Profa. Marina — Biologia</option>
+      <option value="lucas">🌎 Prof. Lucas — Inglês</option>
+    </select>
+  </div>
+
+  <div id="conversations-list"></div>
+</div>
+
+<!-- Modal visualizar conversa -->
+<div class="modal-overlay" id="conv-modal" style="display:none" onclick="if(event.target===this)closeConvModal()">
+  <div class="modal" style="max-width:680px">
+    <div class="modal__header">
+      <h2 id="modal-title">Conversa</h2>
+    </div>
+    <div class="modal__body" style="max-height:60vh;overflow-y:auto" id="modal-messages"></div>
+    <div class="modal__footer">
+      <button class="btn btn-ghost" onclick="closeConvModal()">Fechar</button>
+      <button class="btn btn-outline btn-sm" style="border-color:var(--mid-blue);color:var(--mid-blue)" onclick="exportPDF()">📄 Exportar PDF</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/geo.js"></script>
+<script src="/js/suporte.js"></script>
+<script>
+  const PROF_EMOJIS = { carlos:'📐',ana:'✍️',ricardo:'⚡',beatriz:'🧪',joao:'🏛️',marina:'🌿',lucas:'🌎',sofia:'🛠️' };
+  const PROF_NAMES  = { carlos:'Prof. Carlos',ana:'Profa. Ana',ricardo:'Prof. Ricardo',beatriz:'Profa. Beatriz',joao:'Prof. João',marina:'Profa. Marina',lucas:'Prof. Lucas',sofia:'Profa. Sofia' };
+  let currentConv = null;
+
+  requireAuth();
+  const user = getUser();
+  renderHeader(user);
+  loadConversations();
+
+  async function loadConversations() {
+    const busca = document.getElementById('busca-input').value;
+    const prof = document.getElementById('prof-filter').value;
+    const list = document.getElementById('conversations-list');
+    list.innerHTML = '<p style="color:var(--gray-text)">Carregando...</p>';
+
+    let q = '/conversations?';
+    if (busca) q += `busca=${encodeURIComponent(busca)}&`;
+    if (prof) q += `professor=${encodeURIComponent(prof)}`;
+
+    const { ok, data } = await apiFetch(q);
+    if (!ok) { list.innerHTML = '<p style="color:var(--danger)">Erro ao carregar.</p>'; return; }
+    if (!data.length) { list.innerHTML = '<p style="color:var(--gray-text);text-align:center;padding:40px">Nenhuma conversa salva ainda.</p>'; return; }
+
+    list.innerHTML = data.map(c => {
+      const date = new Date(c.criado_em).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+      const emoji = PROF_EMOJIS[c.professor_id] || '📚';
+      const nome = PROF_NAMES[c.professor_id] || c.professor_id;
+      return `
+        <div class="conversation-item">
+          <div class="conversation-item__emoji">${emoji}</div>
+          <div class="conversation-item__info">
+            <div class="conversation-item__title">${escapeHtml(c.titulo)}</div>
+            <div class="conversation-item__meta">${nome} · ${date} · ${c.total_mensagens} mensagens</div>
+          </div>
+          <div class="conversation-item__actions">
+            <button class="btn btn-primary btn-sm" onclick="openConv(${c.id})">Ver</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteConv(${c.id})">Excluir</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async function openConv(id) {
+    const { ok, data } = await apiFetch('/conversations/' + id);
+    if (!ok) { showToast('Erro ao carregar conversa.', 'error'); return; }
+    currentConv = data;
+    document.getElementById('modal-title').textContent = data.titulo;
+    const emoji = PROF_EMOJIS[data.professor_id] || '📚';
+    const msgs = document.getElementById('modal-messages');
+    msgs.innerHTML = (data.mensagens || []).map(m => `
+      <div class="message ${m.role === 'user' ? 'message--user' : 'message--ai'}" style="margin-bottom:12px">
+        <div class="message__avatar">${m.role === 'user' ? '👤' : emoji}</div>
+        <div class="message__bubble" style="font-size:.875rem">${escapeHtml(m.content).replace(/\n/g,'<br>')}</div>
+      </div>
+    `).join('');
+    document.getElementById('conv-modal').style.display = 'flex';
+  }
+
+  function closeConvModal() { document.getElementById('conv-modal').style.display = 'none'; }
+
+  async function deleteConv(id) {
+    if (!confirm('Excluir esta conversa?')) return;
+    const { ok } = await apiFetch('/conversations/' + id, { method: 'DELETE' });
+    if (ok) { showToast('Conversa excluída.'); loadConversations(); }
+    else showToast('Erro ao excluir.', 'error');
+  }
+
+  function exportPDF() {
+    if (!currentConv) return;
+    const win = window.open('', '_blank');
+    const msgs = (currentConv.mensagens || []).map(m =>
+      `<div style="margin-bottom:12px"><strong>${m.role === 'user' ? 'Você' : 'Professor'}:</strong><br>${escapeHtml(m.content).replace(/\n/g,'<br>')}</div>`
+    ).join('<hr style="border:none;border-top:1px solid #eee;margin:12px 0">');
+    win.document.write(`<html><head><title>${escapeHtml(currentConv.titulo)}</title></head><body style="font-family:Arial,sans-serif;max-width:700px;margin:40px auto;padding:0 20px"><h1>${escapeHtml(currentConv.titulo)}</h1>${msgs}</body></html>`);
+    win.document.close();
+    win.print();
+  }
+
+  function escapeHtml(t = '') {
+    return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>

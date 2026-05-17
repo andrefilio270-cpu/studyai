@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil — StudyAI</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="header" id="header"></header>
+
+<div class="profile-page">
+  <h1 style="font-family:'Poppins',sans-serif;color:var(--dark-blue);margin-bottom:24px">👤 Meu Perfil</h1>
+  <div id="profile-content"><p style="color:var(--gray-text)">Carregando...</p></div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/geo.js"></script>
+<script src="/js/checkout.js"></script>
+<script src="/js/suporte.js"></script>
+<script>
+  requireAuth();
+  const localUser = getUser();
+  renderHeader(localUser);
+
+  async function loadProfile() {
+    const { ok, data } = await apiFetch('/auth/me');
+    if (!ok) { showToast('Erro ao carregar perfil.', 'error'); return; }
+
+    const badgeClass = { free:'badge-free', semanal:'badge-semanal', mensal:'badge-mensal', anual:'badge-anual' }[data.plano] || 'badge-free';
+    const badgeLabel = { free:'Gratuito', semanal:'Semanal', mensal:'Membro', anual:'Estudante Elite ⭐' }[data.plano] || data.plano;
+    const expira = data.plano_expira_em ? new Date(data.plano_expira_em).toLocaleDateString('pt-BR') : '—';
+    const desde = new Date(data.criado_em).toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+    const materias = (data.materias_favoritas || []).slice(0, 5);
+
+    document.getElementById('profile-content').innerHTML = `
+      <div class="profile-card">
+        <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--mid-blue);color:white;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:800">
+            ${(data.nome || 'U')[0].toUpperCase()}
+          </div>
+          <div>
+            <h2 style="font-size:1.3rem">${escapeHtml(data.nome)}</h2>
+            <p style="color:var(--gray-text);font-size:.875rem">${escapeHtml(data.email)}</p>
+            <span class="profile-badge ${badgeClass}" style="margin-top:6px">${badgeLabel}</span>
+          </div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="stat-box__value">${data.perguntas_usadas || 0}</div><div class="stat-box__label">Perguntas feitas</div></div>
+          <div class="stat-box"><div class="stat-box__value">${expira}</div><div class="stat-box__label">Plano expira em</div></div>
+          <div class="stat-box"><div class="stat-box__value">${desde}</div><div class="stat-box__label">Membro desde</div></div>
+        </div>
+      </div>
+
+      ${materias.length ? `
+      <div class="profile-card">
+        <h3>📚 Matérias favoritas</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          ${materias.map(m => `<span style="background:#EEF2FF;color:var(--mid-blue);padding:6px 14px;border-radius:20px;font-size:.82rem;font-weight:600">${escapeHtml(m)}</span>`).join('')}
+        </div>
+      </div>` : ''}
+
+      <div class="profile-card">
+        <h3>🚀 Fazer upgrade de plano</h3>
+        <div class="plans-grid" style="margin-top:16px">
+          ${data.plano !== 'semanal' && data.plano !== 'mensal' && data.plano !== 'anual' ? renderPlanCard('semanal', 'R$ 9,90/sem', 'Semanal', '') : ''}
+          ${data.plano !== 'mensal' && data.plano !== 'anual' ? renderPlanCard('mensal', 'R$ 29,90/mês', 'Mensal', '') : ''}
+          ${data.plano !== 'anual' ? renderPlanCard('anual', 'R$ 199,90/ano', 'Anual', 'MAIS POPULAR') : '<p style="color:var(--success);font-weight:600">Você já tem o melhor plano!</p>'}
+        </div>
+      </div>
+
+      <div style="text-align:right;margin-top:8px">
+        <button class="btn btn-danger btn-sm" onclick="logout()">Sair da conta</button>
+      </div>
+    `;
+  }
+
+  function renderPlanCard(plano, preco, nome, badge) {
+    return `
+      <div class="plan-card ${badge ? 'plan-card--popular' : ''}">
+        ${badge ? `<div class="plan-card__badge">${badge}</div>` : ''}
+        <div class="plan-card__name">${nome}</div>
+        <div class="plan-card__price" data-preco="${plano}">${preco}</div>
+        <button class="btn btn-primary btn-sm" style="width:100%;margin-top:12px"
+          data-checkout="${plano}" onclick="startCheckout('${plano}')">Assinar</button>
+      </div>`;
+  }
+
+  function escapeHtml(t = '') {
+    return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  loadProfile();
+</script>
+</body>
+</html>

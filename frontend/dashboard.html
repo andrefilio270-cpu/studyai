@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — StudyAI</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="header" id="header"></header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar__title">Professores</div>
+    <div id="professor-list"></div>
+  </aside>
+
+  <main class="main">
+    <div id="chat-area" style="flex:1;display:flex;flex-direction:column">
+      <div class="welcome-screen">
+        <div class="welcome-screen__emoji">📚</div>
+        <h2>Escolha um professor para começar</h2>
+        <p>Selecione uma matéria na barra lateral e tire suas dúvidas com nossos professores de IA especializados.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal upgrade -->
+<div class="modal-overlay" id="upgrade-modal" style="display:none" onclick="if(event.target===this)closeUpgradeModal()">
+  <div class="modal">
+    <div class="modal__header">
+      <h2>🚀 Suas 5 perguntas gratuitas acabaram!</h2>
+      <p style="opacity:.8;font-size:.9rem;margin-top:4px">Faça upgrade para continuar aprendendo</p>
+    </div>
+    <div class="modal__body">
+      <div class="plans-grid">
+        <div class="plan-card">
+          <div class="plan-card__name">Semanal</div>
+          <div class="plan-card__price"><span data-preco="semanal">R$ 9,90</span><span>/sem</span></div>
+          <ul>
+            <li>Perguntas ilimitadas</li>
+            <li>8 professores</li>
+            <li>Histórico 30 dias</li>
+          </ul>
+          <button class="btn btn-outline btn-sm" style="border-color:var(--mid-blue);color:var(--mid-blue);width:100%"
+            data-checkout="semanal" data-label="Assinar" onclick="startCheckout('semanal')" data-i18n="btn.subscribe">Assinar</button>
+        </div>
+        <div class="plan-card">
+          <div class="plan-card__name" data-i18n="plan.monthly.name">Mensal</div>
+          <div class="plan-card__price"><span data-preco="mensal">R$ 29,90</span><span data-i18n="plan.per.month">/mês</span></div>
+          <ul>
+            <li data-i18n="plan.monthly.feat1">Perguntas ilimitadas</li>
+            <li data-i18n="plan.monthly.feat2">Histórico por 1 ano</li>
+            <li data-i18n="plan.monthly.feat3">Chat da comunidade</li>
+            <li data-i18n="plan.monthly.feat4">Badge "Membro"</li>
+          </ul>
+          <button class="btn btn-primary btn-sm" style="width:100%"
+            data-checkout="mensal" data-label="Assinar" onclick="startCheckout('mensal')" data-i18n="btn.subscribe">Assinar</button>
+        </div>
+        <div class="plan-card plan-card--popular">
+          <div class="plan-card__badge" data-i18n="plan.popular">⭐ MAIS POPULAR</div>
+          <div class="plan-card__name" style="margin-top:8px" data-i18n="plan.yearly.name">Anual</div>
+          <div class="plan-card__price"><span data-preco="anual">R$ 199,90</span><span data-i18n="plan.per.year">/ano</span></div>
+          <div class="plan-card__save"><span data-i18n="plan.yearly.equiv">Equivale a</span> <span data-preco-anual-mes>R$ 16,66/mês</span></div>
+          <ul>
+            <li data-i18n="plan.yearly.feat1">Tudo do Mensal</li>
+            <li data-i18n="plan.yearly.feat2">Conversas salvas para sempre</li>
+            <li data-i18n="plan.yearly.feat3">Badge "Estudante Elite" dourado</li>
+            <li data-i18n="plan.yearly.feat4">Acesso prioritário</li>
+          </ul>
+          <button class="btn btn-amber btn-sm" style="width:100%"
+            data-checkout="anual" data-label="Melhor valor!" onclick="startCheckout('anual')" data-i18n="btn.best_value">Melhor valor!</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn-ghost" onclick="closeUpgradeModal()">Agora não</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/geo.js"></script>
+<script src="/js/chat.js"></script>
+<script src="/js/checkout.js"></script>
+<script src="/js/suporte.js"></script>
+<script>
+  initDashboard();
+  applyTranslations();
+  updateAllPrices();
+  const origShowUpgrade = showUpgradeModal;
+  window.showUpgradeModal = function() { origShowUpgrade(); updateAllPrices(); applyTranslations(); };
+</script>
+</body>
+</html>

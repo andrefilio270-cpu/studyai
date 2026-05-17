@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planos — StudyAI</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .plans-page { padding: 100px 32px 60px; max-width: 960px; margin: 0 auto; }
+    .plans-page__hero { text-align: center; margin-bottom: 48px; }
+    .plans-page__hero h1 { font-family: 'Poppins', sans-serif; font-size: 2rem; color: var(--dark-blue); margin-bottom: 8px; }
+    .plans-page__hero p { color: var(--gray-text); font-size: 1rem; }
+    .current-plan-bar { background: #EEF2FF; border: 1.5px solid #C7D2FE; border-radius: 12px; padding: 14px 20px; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
+    .current-plan-bar__icon { font-size: 1.4rem; }
+    .current-plan-bar__text { font-size: .9rem; color: var(--dark-blue); font-weight: 600; }
+    .current-plan-bar__sub { font-size: .8rem; color: var(--gray-text); font-weight: 400; }
+    .plans-full-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; }
+    .plan-full-card { background: var(--white); border: 2px solid var(--gray-mid); border-radius: 16px; padding: 28px 22px; position: relative; transition: border-color .2s, transform .2s; display: flex; flex-direction: column; }
+    .plan-full-card:hover { border-color: var(--mid-blue); transform: translateY(-3px); }
+    .plan-full-card--popular { border-color: var(--amber); }
+    .plan-full-card--popular:hover { border-color: var(--amber-dark); }
+    .plan-full-card--current { border-color: var(--success); background: #F0FDF4; }
+    .plan-full-card__badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); padding: 4px 14px; border-radius: 20px; font-size: .72rem; font-weight: 800; white-space: nowrap; }
+    .badge-popular { background: var(--amber); color: var(--dark-blue); }
+    .badge-current { background: var(--success); color: white; }
+    .plan-full-card__name { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--dark-blue); margin-bottom: 12px; }
+    .plan-full-card__price { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 800; color: var(--dark-blue); margin-bottom: 4px; line-height: 1; }
+    .plan-full-card__period { font-size: .82rem; color: var(--gray-text); margin-bottom: 6px; }
+    .plan-full-card__equiv { font-size: .78rem; color: var(--success); font-weight: 600; margin-bottom: 16px; min-height: 18px; }
+    .plan-full-card__features { list-style: none; margin-bottom: 24px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .plan-full-card__features li { font-size: .83rem; color: #374151; display: flex; align-items: flex-start; gap: 8px; }
+    .plan-full-card__features li::before { content: '✓'; color: var(--success); font-weight: 800; flex-shrink: 0; }
+    .plan-full-card__btn { margin-top: auto; }
+    .faq { margin-top: 56px; }
+    .faq h2 { font-family: 'Poppins', sans-serif; color: var(--dark-blue); margin-bottom: 24px; font-size: 1.3rem; }
+    .faq-item { border-bottom: 1px solid var(--gray-mid); padding: 16px 0; }
+    .faq-item summary { font-weight: 600; font-size: .9rem; cursor: pointer; color: var(--dark-blue); list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    .faq-item summary::after { content: '+'; font-size: 1.2rem; color: var(--mid-blue); }
+    .faq-item[open] summary::after { content: '−'; }
+    .faq-item p { margin-top: 10px; font-size: .875rem; color: var(--gray-text); line-height: 1.65; }
+  </style>
+</head>
+<body>
+<header class="header" id="header"></header>
+
+<div class="plans-page">
+  <div class="plans-page__hero">
+    <h1 data-i18n="plans.title">Planos e preços</h1>
+    <p data-i18n="plans.sub">Comece grátis, faça upgrade quando quiser</p>
+  </div>
+
+  <div id="current-plan-bar"></div>
+
+  <div class="plans-full-grid" id="plans-grid">
+    <!-- Renderizado via JS -->
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq">
+    <h2 id="faq-title">Perguntas frequentes</h2>
+    <details class="faq-item">
+      <summary id="faq1-q">O pagamento é seguro?</summary>
+      <p id="faq1-a">Sim. Todos os pagamentos são processados pelo Stripe, líder mundial em pagamentos online. Não armazenamos dados do seu cartão.</p>
+    </details>
+    <details class="faq-item">
+      <summary id="faq2-q">Posso cancelar a qualquer momento?</summary>
+      <p id="faq2-a">Sim. O plano é válido pelo período contratado (semanal, mensal ou anual) e não renova automaticamente. Não há fidelidade.</p>
+    </details>
+    <details class="faq-item">
+      <summary id="faq3-q">Quais formas de pagamento são aceitas?</summary>
+      <p id="faq3-a">Cartão de crédito e débito (Visa, Mastercard, American Express) via Stripe Checkout seguro.</p>
+    </details>
+    <details class="faq-item">
+      <summary id="faq4-q">O que acontece quando meu plano expira?</summary>
+      <p id="faq4-a">Sua conta volta automaticamente para o plano gratuito com 5 perguntas. Suas conversas salvas são mantidas de acordo com o plano que tinha.</p>
+    </details>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/geo.js"></script>
+<script src="/js/checkout.js"></script>
+<script src="/js/suporte.js"></script>
+<script>
+requireAuth();
+
+const PLAN_DEFS = {
+  pt: [
+    {
+      id: 'free', name: 'Gratuito', priceKey: null, period: '/sempre', equiv: '',
+      features: ['5 perguntas para testar', 'Todos os 8 professores', 'Histórico por 7 dias'],
+      btnLabel: 'Plano atual', btnClass: 'btn-ghost', disabled: true, popular: false
+    },
+    {
+      id: 'semanal', name: 'Semanal', priceKey: 'semanal', period: '/semana', equiv: '',
+      features: ['Perguntas ilimitadas', 'Todos os 8 professores', 'Histórico por 30 dias'],
+      btnLabel: 'Assinar', btnClass: 'btn-primary', disabled: false, popular: false
+    },
+    {
+      id: 'mensal', name: 'Mensal', priceKey: 'mensal', period: '/mês', equiv: '',
+      features: ['Perguntas ilimitadas', 'Histórico por 1 ano', 'Chat da comunidade', 'Badge "Membro"'],
+      btnLabel: 'Assinar', btnClass: 'btn-primary', disabled: false, popular: false
+    },
+    {
+      id: 'anual', name: 'Anual', priceKey: 'anual', period: '/ano', equiv: true,
+      features: ['Tudo do Mensal', 'Conversas salvas para sempre', 'Badge "Estudante Elite" dourado', 'Acesso prioritário'],
+      btnLabel: 'Melhor valor!', btnClass: 'btn-amber', disabled: false, popular: true
+    }
+  ],
+  en: [
+    {
+      id: 'free', name: 'Free', priceKey: null, period: '/forever', equiv: '',
+      features: ['5 questions to try', 'All 8 teachers', '7-day history'],
+      btnLabel: 'Current plan', btnClass: 'btn-ghost', disabled: true, popular: false
+    },
+    {
+      id: 'semanal', name: 'Weekly', priceKey: 'semanal', period: '/week', equiv: '',
+      features: ['Unlimited questions', 'All 8 teachers', '30-day history'],
+      btnLabel: 'Subscribe', btnClass: 'btn-primary', disabled: false, popular: false
+    },
+    {
+      id: 'mensal', name: 'Monthly', priceKey: 'mensal', period: '/month', equiv: '',
+      features: ['Unlimited questions', '1-year history', 'Community chat', '"Member" badge'],
+      btnLabel: 'Subscribe', btnClass: 'btn-primary', disabled: false, popular: false
+    },
+    {
+      id: 'anual', name: 'Yearly', priceKey: 'anual', period: '/year', equiv: true,
+      features: ['Everything in Monthly', 'Conversations saved forever', 'Golden "Elite Student" badge', 'Priority access'],
+      btnLabel: 'Best value!', btnClass: 'btn-amber', disabled: false, popular: true
+    }
+  ],
+  es: [
+    {
+      id: 'free', name: 'Gratuito', priceKey: null, period: '/siempre', equiv: '',
+      features: ['5 preguntas para probar', 'Los 8 profesores', 'Historial 7 días'],
+      btnLabel: 'Plan actual', btnClass: 'btn-ghost', disabled: true, popular: false
+    },
+    {
+      id: 'semanal', name: 'Semanal', priceKey: 'semanal', period: '/semana', equiv: '',
+      features: ['Preguntas ilimitadas', 'Los 8 profesores', 'Historial 30 días'],
+      btnLabel: 'Suscribirse', btnClass: 'btn-primary', disabled: false, popular: false
+    },
+    {
+      id: 'mensal', name: 'Mensual', priceKey: 'mensal', period: '/mes', equiv: '',
+      features: ['Preguntas ilimitadas', 'Historial 1 año', 'Chat comunitario', 'Insignia "Miembro"'],
+      btnLabel: 'Suscribirse', btnClass: 'btn-primary', disabled: false, popular: false
+    },
+    {
+      id: 'anual', name: 'Anual', priceKey: 'anual', period: '/año', equiv: true,
+      features: ['Todo lo del Mensual', 'Conversaciones guardadas para siempre', 'Insignia dorada "Estudiante Elite"', 'Acceso prioritario'],
+      btnLabel: '¡Mejor valor!', btnClass: 'btn-amber', disabled: false, popular: true
+    }
+  ]
+};
+
+async function initPlans() {
+  const user = getUser();
+  renderHeader(user);
+  applyTranslations();
+  await updateAllPrices();
+  renderCurrentPlanBar(user);
+  renderPlansGrid(user);
+  applyFaqLang();
+}
+
+function renderCurrentPlanBar(user) {
+  const bar = document.getElementById('current-plan-bar');
+  if (!bar || !user) return;
+  const lang = getLang ? getLang() : 'pt';
+  const expira = user.plano_expira_em
+    ? new Date(user.plano_expira_em).toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'})
+    : null;
+
+  const msgs = {
+    pt: { free: 'Você está no plano Gratuito — 5 perguntas disponíveis.', paid: `Plano ${user.plano} ativo`, exp: `Válido até ${expira}` },
+    en: { free: 'You are on the Free plan — 5 questions available.', paid: `${user.plano} plan active`, exp: `Valid until ${expira}` },
+    es: { free: 'Estás en el plan Gratuito — 5 preguntas disponibles.', paid: `Plan ${user.plano} activo`, exp: `Válido hasta ${expira}` },
+  };
+  const m = msgs[lang] || msgs.pt;
+
+  bar.innerHTML = `
+    <div class="current-plan-bar__icon">${user.plano === 'free' ? '🎓' : '⭐'}</div>
+    <div>
+      <div class="current-plan-bar__text">${user.plano === 'free' ? m.free : m.paid}</div>
+      ${expira ? `<div class="current-plan-bar__sub">${m.exp}</div>` : ''}
+    </div>
+  `;
+}
+
+function renderPlansGrid(user) {
+  const grid = document.getElementById('plans-grid');
+  const lang = getLang ? getLang() : 'pt';
+  const plans = PLAN_DEFS[lang] || PLAN_DEFS.pt;
+  const prices = getPrices ? getPrices() : { semanal: 9.90, mensal: 29.90, anual: 199.90, symbol: 'R$', decimals: 2 };
+
+  grid.innerHTML = plans.map(plan => {
+    const isCurrent = user.plano === plan.id;
+    const isHigherPlan = isPlanHigher(plan.id, user.plano);
+
+    let priceHtml = '';
+    if (!plan.priceKey) {
+      priceHtml = `<div class="plan-full-card__price">R$ 0</div>`;
+    } else {
+      priceHtml = `<div class="plan-full-card__price" data-preco="${plan.priceKey}">${formatLocalPrice(plan.priceKey)}</div>`;
+    }
+
+    let equivHtml = '';
+    if (plan.equiv && prices) {
+      const monthly = (prices.anual / 12).toFixed(prices.decimals || 2);
+      equivHtml = `<div class="plan-full-card__equiv">${prices.symbol} ${monthly}${plan.period === '/year' ? '/month' : '/mês'}</div>`;
+    } else {
+      equivHtml = `<div class="plan-full-card__equiv"></div>`;
+    }
+
+    const btnLabel = isCurrent ? (lang === 'en' ? 'Current plan' : lang === 'es' ? 'Plan actual' : 'Plano atual') : plan.btnLabel;
+    const btnClass = isCurrent ? 'btn-ghost' : isHigherPlan ? plan.btnClass : 'btn-outline';
+    const disabled = isCurrent || (!isHigherPlan && plan.id !== 'free') ? 'disabled style="opacity:.5;cursor:not-allowed"' : '';
+    const onclick = (!isCurrent && plan.priceKey && isHigherPlan) ? `onclick="startCheckout('${plan.id}')"` : '';
+
+    return `
+      <div class="plan-full-card ${plan.popular ? 'plan-full-card--popular' : ''} ${isCurrent ? 'plan-full-card--current' : ''}">
+        ${isCurrent ? `<div class="plan-full-card__badge badge-current">✓ ${lang === 'en' ? 'Current' : lang === 'es' ? 'Actual' : 'Atual'}</div>` : ''}
+        ${plan.popular && !isCurrent ? `<div class="plan-full-card__badge badge-popular">⭐ ${lang === 'en' ? 'MOST POPULAR' : lang === 'es' ? 'MÁS POPULAR' : 'MAIS POPULAR'}</div>` : ''}
+        <div class="plan-full-card__name">${plan.name}</div>
+        ${priceHtml}
+        <div class="plan-full-card__period">${plan.period}</div>
+        ${equivHtml}
+        <ul class="plan-full-card__features">
+          ${plan.features.map(f => `<li>${f}</li>`).join('')}
+        </ul>
+        <div class="plan-full-card__btn">
+          <button class="btn ${btnClass}" style="width:100%;padding:11px" ${disabled} ${onclick}>${btnLabel}</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function isPlanHigher(planId, currentPlan) {
+  const order = { free: 0, semanal: 1, mensal: 2, anual: 3 };
+  return (order[planId] || 0) > (order[currentPlan] || 0);
+}
+
+function applyFaqLang() {
+  const lang = getLang ? getLang() : 'pt';
+  const faqs = {
+    pt: {
+      title: 'Perguntas frequentes',
+      q1: 'O pagamento é seguro?', a1: 'Sim. Todos os pagamentos são processados pelo Stripe, líder mundial em pagamentos online. Não armazenamos dados do seu cartão.',
+      q2: 'Posso cancelar a qualquer momento?', a2: 'Sim. O plano é válido pelo período contratado e não renova automaticamente. Sem fidelidade.',
+      q3: 'Quais formas de pagamento são aceitas?', a3: 'Cartão de crédito e débito (Visa, Mastercard, American Express) via Stripe Checkout seguro.',
+      q4: 'O que acontece quando meu plano expira?', a4: 'Sua conta volta para o plano gratuito com 5 perguntas. Suas conversas salvas são mantidas.',
+    },
+    en: {
+      title: 'Frequently asked questions',
+      q1: 'Is payment secure?', a1: 'Yes. All payments are processed by Stripe, the world leader in online payments. We never store your card data.',
+      q2: 'Can I cancel anytime?', a2: 'Yes. The plan is valid for the contracted period and does not auto-renew. No commitment.',
+      q3: 'What payment methods are accepted?', a3: 'Credit and debit cards (Visa, Mastercard, American Express) via secure Stripe Checkout.',
+      q4: 'What happens when my plan expires?', a4: 'Your account returns to the free plan with 5 questions. Your saved conversations are kept.',
+    },
+    es: {
+      title: 'Preguntas frecuentes',
+      q1: '¿El pago es seguro?', a1: 'Sí. Todos los pagos son procesados por Stripe, líder mundial en pagamentos en línea. No almacenamos los datos de tu tarjeta.',
+      q2: '¿Puedo cancelar en cualquier momento?', a2: 'Sí. El plan es válido por el período contratado y no se renueva automáticamente. Sin fidelidad.',
+      q3: '¿Qué métodos de pago se aceptan?', a3: 'Tarjeta de crédito y débito (Visa, Mastercard, American Express) vía Stripe Checkout seguro.',
+      q4: '¿Qué pasa cuando mi plan expira?', a4: 'Tu cuenta vuelve al plan gratuito con 5 preguntas. Tus conversaciones guardadas se mantienen.',
+    }
+  };
+  const f = faqs[lang] || faqs.pt;
+  document.getElementById('faq-title').textContent = f.title;
+  document.getElementById('faq1-q').textContent = f.q1; document.getElementById('faq1-a').textContent = f.a1;
+  document.getElementById('faq2-q').textContent = f.q2; document.getElementById('faq2-a').textContent = f.a2;
+  document.getElementById('faq3-q').textContent = f.q3; document.getElementById('faq3-a').textContent = f.a3;
+  document.getElementById('faq4-q').textContent = f.q4; document.getElementById('faq4-a').textContent = f.a4;
+}
+
+initPlans();
+</script>
+</body>
+</html>

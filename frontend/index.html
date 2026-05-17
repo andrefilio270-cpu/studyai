@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyAI</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+    .feature-card { background: var(--white); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); }
+    .feature-card__icon { font-size: 2.2rem; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 1rem; color: var(--dark-blue); margin-bottom: 6px; }
+    .feature-card p { font-size: .85rem; color: var(--gray-text); line-height: 1.6; }
+    .footer { background: var(--dark-blue); color: rgba(255,255,255,.6); text-align: center; padding: 32px; font-size: .85rem; }
+    .footer a { color: var(--amber); }
+  </style>
+</head>
+<body>
+
+<header class="landing-header">
+  <div class="landing-header__logo">Study<span>AI</span></div>
+  <nav class="landing-header__nav" style="align-items:center;gap:10px">
+    <div id="lang-selector-wrap"></div>
+    <a href="/login.html" class="btn btn-outline btn-sm" data-i18n="nav.login">Entrar</a>
+    <a href="/cadastro.html" class="btn btn-amber btn-sm" data-i18n="nav.signup">Começar grátis</a>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <h1><span data-i18n="hero.title">Aprenda com os melhores</span><br><span data-i18n="hero.title.highlight" style="color:var(--amber)">professores de IA</span></h1>
+  <p data-i18n="hero.sub">8 professores especializados em Matemática, Física, Química, Biologia, História, Português, Inglês e mais. Disponíveis 24/7, sem julgamentos.</p>
+  <div class="hero__cta">
+    <a href="/cadastro.html" class="btn btn-amber" style="font-size:1.05rem;padding:14px 32px" data-i18n="hero.cta1">Começar grátis — 5 perguntas hoje</a>
+    <a href="#planos" class="btn btn-outline" style="font-size:1.05rem;padding:14px 32px" data-i18n="hero.cta2">Ver planos</a>
+  </div>
+  <p style="margin-top:16px;font-size:.82rem;opacity:.6" data-i18n="hero.no_card">Sem cartão de crédito. Cadastro em 30 segundos.</p>
+</section>
+
+<!-- Professores -->
+<section class="section">
+  <h2 class="section__title" data-i18n="profs.title">Conheça nossos professores</h2>
+  <p class="section__sub" data-i18n="profs.sub">Cada professor tem personalidade, especialidade e método de ensino únicos</p>
+  <div class="professors-grid">
+    <div class="professor-big-card"><div class="professor-big-card__emoji">📐</div><h3>Prof. Carlos</h3><p>Matemática</p></div>
+    <div class="professor-big-card"><div class="professor-big-card__emoji">✍️</div><h3>Profa. Ana</h3><p>Português / Writing</p></div>
+    <div class="professor-big-card"><div class="professor-big-card__emoji">⚡</div><h3>Prof. Ricardo</h3><p>Física / Physics</p></div>
+    <div class="professor-big-card"><div class="professor-big-card__emoji">🧪</div><h3>Profa. Beatriz</h3><p>Química / Chemistry</p></div>
+    <div class="professor-big-card"><div class="professor-big-card__emoji">🏛️</div><h3>Prof. João</h3><p>História / History</p></div>
+    <div class="professor-big-card"><div class="professor-big-card__emoji">🌿</div><h3>Profa. Marina</h3><p>Biologia / Biology</p></div>
+    <div class="professor-big-card"><div class="professor-big-card__emoji">🌎</div><h3>Prof. Lucas</h3><p>Inglês / English</p></div>
+    <div class="professor-big-card"><div class="professor-big-card__emoji">🛠️</div><h3>Sofia</h3><p>Suporte / Support</p></div>
+  </div>
+</section>
+
+<!-- Features -->
+<section style="background:var(--gray-light);padding:64px 32px">
+  <div style="max-width:1100px;margin:0 auto">
+    <h2 class="section__title" data-i18n="features.title">Por que o StudyAI?</h2>
+    <p class="section__sub" data-i18n="features.sub">Muito mais do que um simples chatbot</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-card__icon">💬</div><h3 data-i18n="feat1.title">Chat por matéria</h3><p data-i18n="feat1.desc">Cada professor só responde sua especialidade, com qualidade e profundidade reais.</p></div>
+      <div class="feature-card"><div class="feature-card__icon">💾</div><h3 data-i18n="feat2.title">Salve suas conversas</h3><p data-i18n="feat2.desc">Revise suas aulas quando quiser, exporte em PDF e compartilhe com a comunidade.</p></div>
+      <div class="feature-card"><div class="feature-card__icon">🌐</div><h3 data-i18n="feat3.title">Chat da Comunidade</h3><p data-i18n="feat3.desc">Interaja com outros estudantes, compartilhe dicas e tire dúvidas coletivas.</p></div>
+      <div class="feature-card"><div class="feature-card__icon">🛡️</div><h3 data-i18n="feat4.title">Moderação por IA</h3><p data-i18n="feat4.desc">Ambiente 100% focado em estudos — moderação automática em tempo real.</p></div>
+      <div class="feature-card"><div class="feature-card__icon">📱</div><h3 data-i18n="feat5.title">Funciona em qualquer tela</h3><p data-i18n="feat5.desc">Desktop, tablet ou celular — estude onde e quando quiser.</p></div>
+      <div class="feature-card"><div class="feature-card__icon">⚡</div><h3 data-i18n="feat6.title">Respostas instantâneas</h3><p data-i18n="feat6.desc">Sem espera, sem filas. Seus professores estão sempre disponíveis 24/7.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Planos -->
+<section class="section" id="planos">
+  <h2 class="section__title" data-i18n="plans.title">Planos e preços</h2>
+  <p class="section__sub" data-i18n="plans.sub">Comece grátis, faça upgrade quando quiser</p>
+  <div class="plans-grid" style="max-width:900px;margin:0 auto">
+
+    <div class="plan-card">
+      <div class="plan-card__name" data-i18n="plan.free.name">Gratuito</div>
+      <div class="plan-card__price">R$ 0<span data-i18n="plan.per.always">/sempre</span></div>
+      <ul>
+        <li data-i18n="plan.free.feat1">5 perguntas para testar</li>
+        <li data-i18n="plan.free.feat2">Todos os 8 professores</li>
+        <li data-i18n="plan.free.feat3">Histórico por 7 dias</li>
+      </ul>
+      <a href="/cadastro.html" class="btn btn-outline btn-sm" style="border-color:var(--mid-blue);color:var(--mid-blue);width:100%;text-align:center" data-i18n="btn.start_free">Começar grátis</a>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-card__name" data-i18n="plan.weekly.name">Semanal</div>
+      <div class="plan-card__price"><span data-preco="semanal">R$ 9,90</span><span data-i18n="plan.per.week">/semana</span></div>
+      <ul>
+        <li data-i18n="plan.weekly.feat1">Perguntas ilimitadas</li>
+        <li data-i18n="plan.weekly.feat2">Todos os 8 professores</li>
+        <li data-i18n="plan.weekly.feat3">Histórico por 30 dias</li>
+      </ul>
+      <a href="/cadastro.html" class="btn btn-primary btn-sm" style="width:100%;text-align:center" data-i18n="btn.subscribe">Assinar</a>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-card__name" data-i18n="plan.monthly.name">Mensal</div>
+      <div class="plan-card__price"><span data-preco="mensal">R$ 29,90</span><span data-i18n="plan.per.month">/mês</span></div>
+      <ul>
+        <li data-i18n="plan.monthly.feat1">Perguntas ilimitadas</li>
+        <li data-i18n="plan.monthly.feat2">Histórico por 1 ano</li>
+        <li data-i18n="plan.monthly.feat3">Chat da comunidade</li>
+        <li data-i18n="plan.monthly.feat4">Badge "Membro"</li>
+      </ul>
+      <a href="/cadastro.html" class="btn btn-primary btn-sm" style="width:100%;text-align:center" data-i18n="btn.subscribe">Assinar</a>
+    </div>
+
+    <div class="plan-card plan-card--popular">
+      <div class="plan-card__badge" data-i18n="plan.popular">⭐ MAIS POPULAR</div>
+      <div class="plan-card__name" style="margin-top:8px" data-i18n="plan.yearly.name">Anual</div>
+      <div class="plan-card__price"><span data-preco="anual">R$ 199,90</span><span data-i18n="plan.per.year">/ano</span></div>
+      <div class="plan-card__save"><span data-i18n="plan.yearly.equiv">Equivale a</span> <span data-preco-anual-mes>R$ 16,66/mês</span></div>
+      <ul>
+        <li data-i18n="plan.yearly.feat1">Tudo do Mensal</li>
+        <li data-i18n="plan.yearly.feat2">Conversas salvas para sempre</li>
+        <li data-i18n="plan.yearly.feat3">Badge "Estudante Elite" dourado</li>
+        <li data-i18n="plan.yearly.feat4">Acesso prioritário a novos recursos</li>
+      </ul>
+      <a href="/cadastro.html" class="btn btn-amber btn-sm" style="width:100%;text-align:center" data-i18n="btn.best_value">Melhor valor!</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p data-i18n="footer.copy">© 2025 StudyAI — Aprenda com os melhores professores de IA</p>
+  <p style="margin-top:8px"><a href="/login.html" data-i18n="nav.login">Entrar</a> · <a href="/cadastro.html" data-i18n="nav.signup">Cadastrar</a></p>
+</footer>
+
+<script src="/js/auth.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/geo.js"></script>
+<script src="/js/suporte.js"></script>
+<script>
+  renderLangSelector('lang-selector-wrap');
+  applyTranslations();
+  updateAllPrices();
+</script>
+</body>
+</html>
