@@ -18,7 +18,7 @@ function renderPostMateriaSelect() {
 }
 
 const SUBJECTS_BY_LANG = {
-  pt: { all: 'Todas', list: ['Matemática','Português','Física','Química','História','Biologia','Inglês'] },
+  pt: { all: 'Todas', list: ['Matemática','Português','Física','Química','História','Biologia','Inglês','Espanhol'] },
   en: { all: 'All',   list: ['Mathematics','English','Physics','Chemistry','History','Biology','Spanish'] },
   es: { all: 'Todas', list: ['Matemáticas','Español','Física','Química','Historia','Biología','Inglés'] },
 };

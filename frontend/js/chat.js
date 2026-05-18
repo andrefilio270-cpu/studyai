@@ -71,7 +71,7 @@ async function loadHistorico() {
     list.innerHTML = '<p style="color:var(--gray-text);font-size:.8rem;padding:12px 8px">Nenhuma conversa ainda.</p>';
     return;
   }
-  const EMOJIS = { carlos:'📐',ana:'✍️',ricardo:'⚡',beatriz:'🧪',joao:'🏛️',marina:'🌿',lucas:'🌎',sofia:'🛠️' };
+  const EMOJIS = { carlos:'📐',ana:'✍️',ricardo:'⚡',beatriz:'🧪',joao:'🏛️',marina:'🌿',lucas:'🌎',miguel:'🇪🇸',sofia:'🛠️' };
   list.innerHTML = data.map(c => {
     const date = new Date(c.atualizado_em).toLocaleDateString('pt-BR', { day:'2-digit', month:'short' });
     const emoji = EMOJIS[c.professor_id] || '📚';
