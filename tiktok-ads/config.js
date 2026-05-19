@@ -1,0 +1,66 @@
+const STUDYAI_URL = process.env.STUDYAI_URL || 'https://loyal-fulfillment-production-4114.up.railway.app';
+
+const SEGMENTS = {
+  middle_school_br: {
+    name: 'Middle School Brasil',
+    location_ids: ['BR'],
+    age_groups: ['AGE_13_17'],
+    languages: ['pt'],
+    budget_daily: 15,
+    currency: 'BRL',
+    objective: 'TRAFFIC',
+    interests: ['Education', 'Online Education', 'Learning Apps'],
+  },
+  high_school_br: {
+    name: 'High School Brasil',
+    location_ids: ['BR'],
+    age_groups: ['AGE_18_24'],
+    languages: ['pt'],
+    budget_daily: 20,
+    currency: 'BRL',
+    objective: 'TRAFFIC',
+    interests: ['Education', 'Online Education', 'Exam Preparation'],
+  },
+  college_br: {
+    name: 'College Brasil',
+    location_ids: ['BR'],
+    age_groups: ['AGE_18_24'],
+    languages: ['pt'],
+    budget_daily: 25,
+    currency: 'BRL',
+    objective: 'TRAFFIC',
+    interests: ['Education', 'University', 'Online Education'],
+  },
+  middle_school_us: {
+    name: 'Middle School USA',
+    location_ids: ['US'],
+    age_groups: ['AGE_13_17'],
+    languages: ['en'],
+    budget_daily: 10,
+    currency: 'USD',
+    objective: 'TRAFFIC',
+    interests: ['Education', 'Learning Apps', 'Homework Help'],
+  },
+  high_school_us: {
+    name: 'High School USA',
+    location_ids: ['US'],
+    age_groups: ['AGE_18_24'],
+    languages: ['en'],
+    budget_daily: 15,
+    currency: 'USD',
+    objective: 'TRAFFIC',
+    interests: ['Education', 'SAT', 'College Prep', 'Online Education'],
+  },
+  college_us: {
+    name: 'College USA',
+    location_ids: ['US'],
+    age_groups: ['AGE_18_24'],
+    languages: ['en'],
+    budget_daily: 20,
+    currency: 'USD',
+    objective: 'TRAFFIC',
+    interests: ['Education', 'University', 'Online Education', 'Study'],
+  },
+};
+
+module.exports = { SEGMENTS, STUDYAI_URL };

@@ -42,6 +42,7 @@ app.use('/api/conversations',require('./routes/conversations'));
 app.use('/api/public-chat',  require('./routes/public-chat'));
 app.use('/api/plans',        require('./routes/plans'));
 app.use('/api/payments',     paymentsRouter);
+app.use('/api/analytics',   require('./routes/analytics'));
 
 // Rota catch-all para SPA
 app.get('*', (req, res) => {

@@ -61,6 +61,7 @@ function renderHeader(user) {
       <a href="/chat-publico.html" class="nav-link">💬 <span data-i18n="nav.chat">${tr('nav.chat')}</span></a>
       <a href="/minhas-conversas.html" class="nav-link">📁 <span data-i18n="nav.conversations">${tr('nav.conversations')}</span></a>
       <a href="/planos.html" class="nav-link">💳 <span data-i18n="nav.plans">${tr('nav.plans')}</span></a>
+      <a href="/analytics.html" class="nav-link">📊 Stats</a>
       <a href="/perfil.html" class="nav-link">👤 <span data-i18n="nav.profile">${tr('nav.profile')}</span></a>
     </nav>
     <div class="header__actions">

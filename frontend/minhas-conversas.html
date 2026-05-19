@@ -123,7 +123,8 @@
     const msgs = (currentConv.mensagens || []).map(m =>
       `<div style="margin-bottom:12px"><strong>${m.role === 'user' ? 'Você' : 'Professor'}:</strong><br>${escapeHtml(m.content).replace(/\n/g,'<br>')}</div>`
     ).join('<hr style="border:none;border-top:1px solid #eee;margin:12px 0">');
-    win.document.write(`<html><head><title>${escapeHtml(currentConv.titulo)}</title></head><body style="font-family:Arial,sans-serif;max-width:700px;margin:40px auto;padding:0 20px"><h1>${escapeHtml(currentConv.titulo)}</h1>${msgs}</body></html>`);
+    win.document.write(`<html><head><title>${escapeHtml(currentConv.titulo)}</title></head><body style="font-family:Arial,sans-serif;max-width:700px;margin:40px auto;padding:0 20px"><h1>${escapeHtml(currentConv.titulo)}</h1>${msgs}<script src="/js/analytics.js"></script>
+</body></html>`);
     win.document.close();
     win.print();
   }
@@ -132,5 +133,6 @@
     return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 </script>
+<script src="/js/analytics.js"></script>
 </body>
 </html>

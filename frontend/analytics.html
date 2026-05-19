@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics — StudyAI</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .analytics-page { padding: 100px 32px 40px; max-width: 1000px; margin: 0 auto; }
+    .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--white); border-radius: 14px; padding: 20px; box-shadow: var(--shadow); text-align: center; }
+    .stat-card__value { font-family: 'Poppins', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--dark-blue); }
+    .stat-card__label { font-size: .78rem; color: var(--gray-text); margin-top: 4px; }
+    .stat-card__today { font-size: .75rem; color: var(--success); font-weight: 600; margin-top: 4px; }
+    .analytics-section { background: var(--white); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
+    .analytics-section h3 { font-size: .9rem; font-weight: 700; color: var(--dark-blue); margin-bottom: 16px; border-bottom: 1px solid var(--gray-mid); padding-bottom: 10px; }
+    .analytics-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-light); font-size: .85rem; }
+    .analytics-row:last-child { border-bottom: none; }
+    .analytics-bar { height: 6px; background: var(--mid-blue); border-radius: 3px; min-width: 4px; }
+    .loading { color: var(--gray-text); text-align: center; padding: 40px; }
+  </style>
+</head>
+<body>
+<header class="header" id="header"></header>
+
+<div class="analytics-page">
+  <h1 style="font-family:'Poppins',sans-serif;color:var(--dark-blue);margin-bottom:8px">📊 Analytics — StudyAI</h1>
+  <p style="color:var(--gray-text);margin-bottom:28px">Visitantes, usuários e conversas em tempo real.</p>
+
+  <div id="analytics-content"><p class="loading">Carregando dados...</p></div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/i18n.js"></script>
+<script src="/js/suporte.js"></script>
+<script>
+requireAuth();
+const user = getUser();
+renderHeader(user);
+
+async function loadAnalytics() {
+  const { ok, data } = await apiFetch('/analytics/dashboard');
+  if (!ok) { document.getElementById('analytics-content').innerHTML = '<p style="color:var(--danger)">Erro ao carregar dados.</p>'; return; }
+
+  const maxVisits = Math.max(...data.top_pages.map(p => p.total), 1);
+  const maxRef = Math.max(...data.top_referrers.map(r => r.total), 1);
+
+  document.getElementById('analytics-content').innerHTML = `
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-card__value">${data.visitas.total.toLocaleString()}</div>
+        <div class="stat-card__label">Visitas totais</div>
+        <div class="stat-card__today">+${data.visitas.hoje} hoje</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">${data.visitas.semana.toLocaleString()}</div>
+        <div class="stat-card__label">Visitas (7 dias)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">${data.usuarios.total.toLocaleString()}</div>
+        <div class="stat-card__label">Usuários cadastrados</div>
+        <div class="stat-card__today">+${data.usuarios.hoje} hoje</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">${data.conversas.total.toLocaleString()}</div>
+        <div class="stat-card__label">Conversas</div>
+        <div class="stat-card__today">+${data.conversas.hoje} hoje</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value" style="color:var(--success)">${data.pagamentos}</div>
+        <div class="stat-card__label">Pagamentos</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="analytics-section">
+        <h3>📄 Páginas mais visitadas</h3>
+        ${data.top_pages.map(p => `
+          <div class="analytics-row">
+            <span style="color:var(--dark-blue);font-weight:600">${p.path}</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="analytics-bar" style="width:${Math.round((p.total/maxVisits)*80)}px"></div>
+              <span style="color:var(--gray-text);min-width:30px;text-align:right">${p.total}</span>
+            </div>
+          </div>
+        `).join('') || '<p style="color:var(--gray-text);font-size:.85rem">Sem dados ainda.</p>'}
+      </div>
+
+      <div class="analytics-section">
+        <h3>🔗 De onde vieram</h3>
+        ${data.top_referrers.map(r => `
+          <div class="analytics-row">
+            <span style="color:var(--dark-blue);font-weight:600;word-break:break-all;max-width:160px">${r.ref.length > 40 ? r.ref.slice(0,40)+'...' : r.ref}</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="analytics-bar" style="width:${Math.round((r.total/maxRef)*80)}px;background:var(--amber)"></div>
+              <span style="color:var(--gray-text);min-width:30px;text-align:right">${r.total}</span>
+            </div>
+          </div>
+        `).join('') || '<p style="color:var(--gray-text);font-size:.85rem">Sem dados ainda.</p>'}
+      </div>
+    </div>
+
+    <p style="text-align:center;color:var(--gray-text);font-size:.78rem;margin-top:16px">
+      Atualizado em ${new Date().toLocaleTimeString('pt-BR')} ·
+      <a href="#" onclick="loadAnalytics()" style="color:var(--mid-blue)">Atualizar</a>
+    </p>
+  `;
+}
+
+loadAnalytics();
+</script>
+</body>
+</html>
