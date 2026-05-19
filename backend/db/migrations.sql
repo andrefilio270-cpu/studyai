@@ -58,3 +58,20 @@ CREATE TABLE IF NOT EXISTS moderation_logs (
   motivo TEXT,
   criado_em TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS page_views (
+  id SERIAL PRIMARY KEY,
+  path VARCHAR(255),
+  referrer VARCHAR(500),
+  user_agent TEXT,
+  ip VARCHAR(100),
+  criado_em TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS eventos (
+  id SERIAL PRIMARY KEY,
+  tipo VARCHAR(50),
+  dados JSONB,
+  ip VARCHAR(100),
+  criado_em TIMESTAMP DEFAULT NOW()
+);
