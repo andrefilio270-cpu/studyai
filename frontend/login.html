@@ -3,67 +3,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StudyAI</title>
+  <title>StudyAI — Entrar</title>
   <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .auth-split { min-height: 100vh; display: flex; background: var(--bg); }
+    .auth-split__left { flex: 0 0 480px; display: flex; align-items: center; justify-content: center; padding: 40px; position: relative; background: rgba(7,2,15,.95); border-right: 1px solid var(--border2); }
+    .auth-split__left::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 80% 60% at 0% 50%, rgba(124,58,237,.2) 0%, transparent 60%); pointer-events:none; }
+    .auth-split__right { flex:1; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background:radial-gradient(ellipse 100% 100% at 50% 50%, rgba(124,58,237,.15) 0%, transparent 70%); }
+    .scene-3d { width:400px; height:400px; perspective:800px; position:relative; }
+    .cube-3d { width:160px; height:160px; position:absolute; top:50%; left:50%; margin:-80px 0 0 -80px; transform-style:preserve-3d; animation:rotateCube3D 10s linear infinite; }
+    .cube-3d .face { position:absolute; width:160px; height:160px; border:1px solid rgba(192,132,252,.4); display:flex; align-items:center; justify-content:center; font-size:2.5rem; backdrop-filter:blur(4px); }
+    .cube-3d .face.front  { background:rgba(124,58,237,.12); transform:translateZ(80px); }
+    .cube-3d .face.back   { background:rgba(217,70,239,.08); transform:rotateY(180deg) translateZ(80px); }
+    .cube-3d .face.left   { background:rgba(109,40,217,.1);  transform:rotateY(-90deg) translateZ(80px); }
+    .cube-3d .face.right  { background:rgba(168,85,247,.08); transform:rotateY(90deg) translateZ(80px); }
+    .cube-3d .face.top    { background:rgba(124,58,237,.06); transform:rotateX(90deg) translateZ(80px); }
+    .cube-3d .face.bottom { background:rgba(92,36,210,.1);   transform:rotateX(-90deg) translateZ(80px); }
+    @keyframes rotateCube3D { to { transform:rotateX(360deg) rotateY(360deg); } }
+    .orbit { position:absolute; top:50%; left:50%; transform-style:preserve-3d; }
+    .orbit-1 { width:280px; height:280px; margin:-140px 0 0 -140px; animation:orbit1 6s linear infinite; }
+    .orbit-2 { width:360px; height:360px; margin:-180px 0 0 -180px; animation:orbit2 10s linear infinite; }
+    .orbit-ring { position:absolute; inset:0; border-radius:50%; border:1px solid rgba(168,85,247,.25); }
+    .orbit-dot { position:absolute; width:12px; height:12px; border-radius:50%; background:linear-gradient(135deg,#C084FC,#E879F9); top:-6px; left:calc(50% - 6px); box-shadow:0 0 12px rgba(192,132,252,.8); }
+    @keyframes orbit1 { to { transform:rotateZ(360deg); } }
+    @keyframes orbit2 { to { transform:rotateX(60deg) rotateZ(360deg); } }
+    .particles { position:absolute; inset:0; pointer-events:none; }
+    .particle { position:absolute; border-radius:50%; background:rgba(192,132,252,.4); animation:floatParticle linear infinite; }
+    @keyframes floatParticle { 0%{transform:translateY(100vh) scale(0);opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{transform:translateY(-100px) scale(1);opacity:0} }
+    .auth-right-text { position:absolute; bottom:60px; left:50%; transform:translateX(-50%); text-align:center; width:340px; }
+    .auth-right-text h2 { font-family:'Poppins',sans-serif; font-size:1.5rem; font-weight:800; margin-bottom:10px; background:linear-gradient(135deg,#C084FC,#E879F9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .auth-right-text p { color:var(--gray); font-size:.9rem; line-height:1.6; }
+    .auth-card { box-shadow:none; background:transparent; border:none; padding:0; width:100%; max-width:380px; transform:none; }
+    .auth-card:hover { transform:none; }
+    @media (max-width:768px) { .auth-split{flex-direction:column} .auth-split__left{flex:none;min-height:100vh;border-right:none} .auth-split__right{display:none} }
+  </style>
 </head>
 <body>
-<div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-card__logo">Study<span>AI</span></div>
-    <h2 data-i18n="login.title">Bem-vindo de volta!</h2>
-    <div id="error-msg" class="form-error" style="display:none"></div>
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <label data-i18n="login.email">E-mail</label>
-        <input type="email" id="email" data-i18n="login.email" placeholder="seu@email.com" required>
+<div class="auth-split">
+  <div class="auth-split__left">
+    <div class="auth-card">
+      <div class="auth-card__logo" style="font-family:'Poppins',sans-serif;font-size:2rem;font-weight:900;margin-bottom:4px">Study<span style="background:linear-gradient(135deg,#C084FC,#E879F9);-webkit-background-clip:text;-webkit-text-fill-color:transparent">AI</span></div>
+      <h2 data-i18n="login.title" style="text-align:left;margin-bottom:28px;font-size:1.4rem;font-weight:700;color:white">Bem-vindo de volta!</h2>
+      <div id="error-msg" class="form-error" style="display:none"></div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label data-i18n="login.email">E-mail</label>
+          <input type="email" id="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label data-i18n="login.password">Senha</label>
+          <input type="password" id="senha" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-glow" id="login-btn" style="width:100%;margin-top:8px" data-i18n="login.btn">Entrar</button>
+      </form>
+      <div class="auth-link" style="text-align:left;margin-top:20px">
+        <span data-i18n="login.no_account">Não tem conta?</span> <a href="/cadastro.html" data-i18n="login.signup_link">Cadastre-se grátis</a>
       </div>
-      <div class="form-group">
-        <label data-i18n="login.password">Senha</label>
-        <input type="password" id="senha" placeholder="••••••••" required>
+      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+        <a href="/index.html" style="font-size:.82rem;color:var(--gray)" data-i18n="login.back">← Início</a>
+        <div id="lang-selector-wrap"></div>
       </div>
-      <button type="submit" class="btn btn-primary" id="login-btn" data-i18n="login.btn">Entrar</button>
-    </form>
-    <div class="auth-link">
-      <span data-i18n="login.no_account">Não tem conta?</span> <a href="/cadastro.html" data-i18n="login.signup_link">Cadastre-se grátis</a>
     </div>
-    <div class="auth-link" style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
-      <a href="/index.html" data-i18n="login.back">← Voltar para o início</a>
-      <div id="lang-selector-wrap"></div>
+  </div>
+  <div class="auth-split__right">
+    <div class="particles" id="particles"></div>
+    <div class="scene-3d">
+      <div class="cube-3d">
+        <div class="face front">🎓</div>
+        <div class="face back">📚</div>
+        <div class="face left">🧠</div>
+        <div class="face right">⭐</div>
+        <div class="face top">🚀</div>
+        <div class="face bottom">✨</div>
+      </div>
+      <div class="orbit orbit-1"><div class="orbit-ring"></div><div class="orbit-dot"></div></div>
+      <div class="orbit orbit-2"><div class="orbit-ring"></div><div class="orbit-dot" style="background:linear-gradient(135deg,#E879F9,#818CF8)"></div></div>
+    </div>
+    <div class="auth-right-text">
+      <h2>Continue aprendendo</h2>
+      <p>Seus professores de IA estão esperando. Entre e continue de onde parou.</p>
     </div>
   </div>
 </div>
 <script src="/js/auth.js"></script>
 <script src="/js/i18n.js"></script>
-<script src="/js/geo.js"></script>
+<script src="/js/analytics.js"></script>
 <script>
   redirectIfAuth();
   renderLangSelector('lang-selector-wrap');
   applyTranslations();
-
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 6 + 2;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;animation-duration:${Math.random()*10+8}s;animation-delay:${Math.random()*8}s;`;
+    container.appendChild(p);
+  }
   async function handleLogin(e) {
     e.preventDefault();
     const btn = document.getElementById('login-btn');
     const errEl = document.getElementById('error-msg');
-    btn.textContent = t('login.loading');
-    btn.disabled = true;
-    errEl.style.display = 'none';
-
-    const { ok, data } = await apiFetch('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email: document.getElementById('email').value, senha: document.getElementById('senha').value })
-    });
-
-    if (ok) {
-      setAuth(data.token, data.user);
-      window.location.href = '/dashboard.html';
-    } else {
-      errEl.textContent = data.error || 'Erro ao entrar.';
-      errEl.style.display = 'block';
-      btn.textContent = t('login.btn');
-      btn.disabled = false;
-    }
+    btn.textContent = t ? t('login.loading') : 'Entrando...';
+    btn.disabled = true; errEl.style.display = 'none';
+    const { ok, data } = await apiFetch('/auth/login', { method:'POST', body:JSON.stringify({ email:document.getElementById('email').value, senha:document.getElementById('senha').value }) });
+    if (ok) { setAuth(data.token, data.user); window.location.href = '/dashboard.html'; }
+    else { errEl.textContent = data.error||'Erro ao entrar.'; errEl.style.display='block'; btn.textContent='Entrar'; btn.disabled=false; }
   }
 </script>
-<script src="/js/analytics.js"></script>
 </body>
 </html>

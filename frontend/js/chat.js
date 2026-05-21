@@ -145,6 +145,10 @@ function selectProfessor(id) {
   pendingImage = null;
   pendingImageType = null;
   currentSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+  // Iniciar animação temática do professor
+  if (typeof startProfessorAnimation === 'function') {
+    setTimeout(() => startProfessorAnimation(id), 300);
+  }
 
   document.querySelectorAll('.professor-card').forEach(c => c.classList.remove('active'));
   const card = document.getElementById('card-' + id);

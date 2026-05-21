@@ -6,13 +6,71 @@
   <title>StudyAI</title>
   <link rel="stylesheet" href="/css/styles.css">
   <style>
-    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
-    .feature-card { background: var(--white); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); }
-    .feature-card__icon { font-size: 2.2rem; margin-bottom: 12px; }
-    .feature-card h3 { font-size: 1rem; color: var(--dark-blue); margin-bottom: 6px; }
-    .feature-card p { font-size: .85rem; color: var(--gray-text); line-height: 1.6; }
-    .footer { background: var(--dark-blue); color: rgba(255,255,255,.6); text-align: center; padding: 32px; font-size: .85rem; }
-    .footer a { color: var(--amber); }
+    /* 3D Shapes landing */
+    .shapes-3d { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+    .shape { position: absolute; opacity: .15; }
+    .cube {
+      width: 80px; height: 80px;
+      transform-style: preserve-3d;
+      animation: rotateCube 12s linear infinite;
+    }
+    .cube div {
+      position: absolute; width: 80px; height: 80px;
+      border: 2px solid #C084FC; background: rgba(124,58,237,.1);
+    }
+    .cube .front  { transform: translateZ(40px); }
+    .cube .back   { transform: rotateY(180deg) translateZ(40px); }
+    .cube .left   { transform: rotateY(-90deg) translateZ(40px); }
+    .cube .right  { transform: rotateY(90deg)  translateZ(40px); }
+    .cube .top    { transform: rotateX(90deg)  translateZ(40px); }
+    .cube .bottom { transform: rotateX(-90deg) translateZ(40px); }
+    @keyframes rotateCube {
+      from { transform: rotateX(0) rotateY(0) rotateZ(0); }
+      to   { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+    }
+    .pyramid {
+      width: 0; height: 0;
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
+      border-bottom: 86px solid rgba(217,70,239,.2);
+      filter: drop-shadow(0 0 20px rgba(217,70,239,.5));
+      animation: floatShape 8s ease-in-out infinite;
+    }
+    .ring {
+      width: 100px; height: 100px; border-radius: 50%;
+      border: 3px solid rgba(168,85,247,.4);
+      box-shadow: 0 0 20px rgba(168,85,247,.3), inset 0 0 20px rgba(168,85,247,.1);
+      animation: spinRing 10s linear infinite;
+    }
+    @keyframes spinRing { to { transform: rotateX(70deg) rotateZ(360deg); } }
+    @keyframes floatShape {
+      0%,100% { transform: translateY(0) rotate(0); }
+      50% { transform: translateY(-40px) rotate(180deg); }
+    }
+    .dot-grid { position: absolute; width: 100%; height: 100%; }
+    .dot-grid::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(124,58,237,.3) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    /* 3D Hero card */
+    .hero-3d-card {
+      background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.3);
+      border-radius: 20px; padding: 20px; backdrop-filter: blur(10px);
+      transform: perspective(800px) rotateY(-15deg) rotateX(5deg);
+      box-shadow: 20px 20px 60px rgba(0,0,0,.5), 0 0 40px rgba(124,58,237,.2);
+      animation: heroCard 6s ease-in-out infinite;
+    }
+    @keyframes heroCard {
+      0%,100% { transform: perspective(800px) rotateY(-15deg) rotateX(5deg); }
+      50% { transform: perspective(800px) rotateY(-10deg) rotateX(8deg) translateY(-10px); }
+    }
+    /* Feature stats */
+    .stats-bar { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin: 48px 0; }
+    .stat-item { text-align: center; }
+    .stat-item__num { font-family: 'Poppins',sans-serif; font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg,#C084FC,#E879F9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .stat-item__label { font-size: .85rem; color: var(--gray); }
   </style>
 </head>
 <body>
@@ -60,8 +118,16 @@
   </div>
 </section>
 
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-item__num">8</div><div class="stat-item__label">Professores de IA</div></div>
+  <div class="stat-item"><div class="stat-item__num">24/7</div><div class="stat-item__label">Disponível</div></div>
+  <div class="stat-item"><div class="stat-item__num">3</div><div class="stat-item__label">Idiomas</div></div>
+  <div class="stat-item"><div class="stat-item__num">∞</div><div class="stat-item__label">Perguntas ilimitadas</div></div>
+</div>
+
 <!-- Features -->
-<section style="background:var(--gray-light);padding:64px 32px">
+<section style="padding:64px 32px;position:relative">
   <div style="max-width:1100px;margin:0 auto">
     <h2 class="section__title" data-i18n="features.title">Por que o StudyAI?</h2>
     <p class="section__sub" data-i18n="features.sub">Muito mais do que um simples chatbot</p>
